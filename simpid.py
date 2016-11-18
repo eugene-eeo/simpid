@@ -41,11 +41,11 @@ class PID:
             )
 
 
-def correct(desired, pid, T):
+def correct(stream, pid):
     v = 0
-    for _ in range(T):
+    for target in stream:
         yield v
-        v = pid.update(desired, v)
+        v = pid.update(target, v)
 
 
 legend_opts = {
@@ -74,6 +74,12 @@ def parse_csv_floats(line):
     return [float(k.strip()) for k in line.split(',')]
 
 
+def n_target_ranges(max_time, targets):
+    for target, (a,b) in target_partition(max_time, targets):
+        for _ in range(a, b):
+            yield target
+
+
 def main(args, colormap=plt.get_cmap('Set2')):
     kp_values = parse_csv_floats(args['--p'])
     ki_values = parse_csv_floats(args['--i'])
@@ -87,21 +93,21 @@ def main(args, colormap=plt.get_cmap('Set2')):
     ranges = list(target_partition(x, targets))
 
     fig, ax = plt.subplots()
-    Y = chain.from_iterable((t for _ in range(a, b)) for (t, (a, b)) in ranges)
-    ax.plot(X, list(Y), color='black')
+    ax.plot(X, list(n_target_ranges(x, targets)), color='black')
 
     num_plots = 0
     for k_p, k_i, k_d in product(kp_values, ki_values, kd_values):
-        pid = PID(k_p, k_i, k_d, dt)
-        V = chain.from_iterable(
-                correct(t, pid, b - a) for (t,(a, b)) in ranges
-            )
-        ax.plot(X, list(V), label='$ {0}, {1}, {2} $'.format(k_p, k_i, k_d))
         num_plots += 1
+        pid = PID(k_p, k_i, k_d, dt)
+        ax.plot(
+            X,
+            list(correct(n_target_ranges(x, targets), pid)),
+            label='$ {0}, {1}, {2} $'.format(k_p, k_i, k_d),
+            )
 
-    colors = [colormap(i) for i in linspace(0, 1, num_plots)]
-    for i, line in enumerate(ax.lines[1:], 1):
-        line.set_color(colors[i-1])
+    colors = (colormap(i) for i in linspace(0, 1, num_plots))
+    for color, line in zip(colors, ax.lines[1:]):
+        line.set_color(color)
 
     ax.set_xlabel('t')
     legend = ax.legend(**legend_opts)
