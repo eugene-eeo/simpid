@@ -71,23 +71,27 @@ def target_partition(max_time, targets):
         end += step
 
 
-def main(args, colormap=plt.cm.viridis):
-    kp_values = [float(k) for k in args['--p'].split(',')]
-    ki_values = [float(k) for k in args['--i'].split(',')]
-    kd_values = [float(k) for k in args['--d'].split(',')]
+def parse_csv_floats(line):
+    return [float(k.strip()) for k in line.split(',')]
+
+
+def main(args, colormap=plt.get_cmap('Set2')):
+    kp_values = parse_csv_floats(args['--p'])
+    ki_values = parse_csv_floats(args['--i'])
+    kd_values = parse_csv_floats(args['--d'])
+    targets = parse_csv_floats(args['--k'])
     T = float(args['--T'])
     dt = float(args['--dt'])
-    targets = [float(k) for k in args['--k'].split(',')]
 
-    num_plots = 0
     x = int(T/dt) + 1
     X = [i*dt for i in range(x)]
     ranges = list(target_partition(x, targets))
 
     fig, ax = plt.subplots()
     Y = chain.from_iterable((t for _ in range(a, b)) for (t, (a, b)) in ranges)
-    ax.plot(X, list(Y), '-', color='black')
+    ax.plot(X, list(Y), color='black')
 
+    num_plots = 0
     for k_p, k_i, k_d in product(kp_values, ki_values, kd_values):
         pid = PID(k_p, k_i, k_d, dt)
         V = chain.from_iterable(
@@ -97,9 +101,7 @@ def main(args, colormap=plt.cm.viridis):
         num_plots += 1
 
     colors = [colormap(i) for i in linspace(0, 1, num_plots)]
-    for i, line in enumerate(ax.lines):
-        if i == 0:
-            continue
+    for i, line in enumerate(ax.lines[1:], 1):
         line.set_color(colors[i-1])
 
     ax.set_xlabel('t')
