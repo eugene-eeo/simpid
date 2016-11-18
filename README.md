@@ -6,7 +6,7 @@ simulator that allows you to play with combinations of values for the P,I,D coef
 and plots a graph so you can visualise the evolution your PID controller over
 time. A discrete time PID is a control variable of the form:
 
-<p align='center'><img src='images/ut.png'/></p>
+<p align='center'><img src='images/ut.png' width='500'/></p>
 
 the program plots the values of the control variable, with configurable sampling
 intervals, maximum time, and target values. If multiple target values are specified,
