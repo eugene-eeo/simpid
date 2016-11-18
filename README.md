@@ -22,4 +22,4 @@ an SVG filename as the output.
 
     $ ./simpid.py --p=0.4,0.5 --i=0.2,0.3,0.4 --d=0.01 --T=200 --k=1,10,5,13,12 abc.svg
 
-<img src='out.svg'/>
+<img src='images/out.svg'/>
