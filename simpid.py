@@ -14,7 +14,6 @@ Options:
     --T=<T>         max simulation time [default: 100]
 """
 
-from __future__ import division
 from itertools import product, chain
 import docopt
 import matplotlib.pyplot as plt

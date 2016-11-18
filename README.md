@@ -1,5 +1,7 @@
 # simpid
 
+**Requires Python 3.5.x**
+
 A simple discrete time PID-controller (basically, something that corrects itself
 according to the errors of the past actions, and predicted future error trends)
 simulator that allows you to play with combinations of values for the P,I,D coefficients
