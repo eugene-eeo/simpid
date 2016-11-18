@@ -6,7 +6,7 @@ simulator that allows you to play with combinations of values for the P,I,D coef
 and plots a graph so you can visualise the evolution your PID controller over
 time. A discrete time PID is a control variable of the form:
 
-<p align='center'><img src='images/ut.svg'/></p>
+<p align='center'><img src='images/ut.png'/></p>
 
 the program plots the values of the control variable, with configurable sampling
 intervals, maximum time, and target values. If multiple target values are specified,
@@ -22,4 +22,4 @@ an SVG filename as the output.
 
     $ ./simpid.py --p=0.4,0.5 --i=0.2,0.3,0.4 --d=0.01 --T=200 --k=1,10,5,13,12 abc.svg
 
-<img src='images/out.svg'/>
+<img src='images/out.png'/>
