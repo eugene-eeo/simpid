@@ -5,12 +5,12 @@
 A simple discrete time PID-controller (basically, something that corrects itself
 according to the errors of the past actions, and predicted future error trends)
 simulator that allows you to play with combinations of values for the P,I,D coefficients
-and plots a graph so you can visualise the evolution your PID controller over
-time. A discrete time PID is a control variable of the form:
+and plots a graph to allow you to see the values over time. A discrete time PID
+is a control variable of the form:
 
 <p align='center'><img src='images/ut.png' width='500'/></p>
 
-the program plots the values of the control variable, with configurable sampling
+the program plots the values of `y(t+1) = y(t) + u(t)`, with configurable sampling
 intervals, maximum time, and target values. If multiple target values are specified,
 then they will be distributed evenly along the time axis. For best results specify
 an SVG filename as the output.

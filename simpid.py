@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Usage:
-    simpid --p=<p> --i=<i> --d=<d> [--k=<k>] [--dt=<dt>] [--T=<T>] <filename>
+    simpid --p=<p> --i=<i> --d=<d> [--k=<k>] [--dt=<dt>] [--T=<T>] [--cmap=<cmap>] <filename>
     simpid --help
 
 Options:
@@ -12,6 +12,7 @@ Options:
     --dt=<dt>       the timestep/sampling interval [default: 1]
     --k=<k>         comma-separated targets [default: 1]
     --T=<T>         max simulation time [default: 100]
+    --cmap=<cmap>   colormap [default: Set2]
 """
 
 from itertools import product, chain
@@ -21,23 +22,23 @@ from numpy import linspace
 
 
 class PID:
-    def __init__(self, k_p, k_i, k_d, dt):
-        self.k_p = k_p
-        self.k_i = k_i
-        self.k_d = k_d
+    def __init__(self, kp, ki, kd, dt):
+        self.kp = kp
+        self.ki = ki
+        self.kd = kd
         self.dt = dt
         self.error_sum = 0
         self.prev_error = 0
 
     def update(self, target, value):
         error = target - value
+        trend = (error - self.prev_error) / self.dt
         self.error_sum += error * self.dt
-        predicted_error = (error - self.prev_error) / self.dt
         self.prev_error = error
         return (
-            (self.k_p * error) +
-            (self.k_i * self.error_sum) +
-            (self.k_d * predicted_error)
+            (self.kp * error) +
+            (self.ki * self.error_sum) +
+            (self.kd * trend)
             )
 
 
@@ -45,7 +46,7 @@ def correct(stream, pid):
     v = 0
     for target in stream:
         yield v
-        v = pid.update(target, v)
+        v += pid.update(target, v)
 
 
 legend_opts = {
@@ -80,10 +81,11 @@ def n_target_ranges(max_time, targets):
             yield target
 
 
-def main(args, colormap=plt.get_cmap('Set2')):
+def main(args):
     kp_values = parse_csv_floats(args['--p'])
     ki_values = parse_csv_floats(args['--i'])
     kd_values = parse_csv_floats(args['--d'])
+    colormap = plt.get_cmap(args['--cmap'])
     targets = parse_csv_floats(args['--k'])
     T = float(args['--T'])
     dt = float(args['--dt'])
@@ -95,17 +97,17 @@ def main(args, colormap=plt.get_cmap('Set2')):
     ax.plot(X, list(n_target_ranges(x, targets)), color='black')
 
     num_plots = 0
-    for k_p, k_i, k_d in product(kp_values, ki_values, kd_values):
+    for kp, ki, kd in product(kp_values, ki_values, kd_values):
         num_plots += 1
-        pid = PID(k_p, k_i, k_d, dt)
+        pid = PID(kp, ki, kd, dt)
         ax.plot(
             X,
             list(correct(n_target_ranges(x, targets), pid)),
-            label='$ {0}, {1}, {2} $'.format(k_p, k_i, k_d),
+            label='$ {0}, {1}, {2} $'.format(kp, ki, kd),
             )
 
-    colors = (colormap(i) for i in linspace(0, 1, num_plots))
-    for color, line in zip(colors, ax.lines[1:]):
+    for f, line in zip(linspace(0, 1, num_plots), ax.lines[1:]):
+        color = colormap(f)
         line.set_color(color)
 
     ax.set_xlabel('t')
