@@ -90,7 +90,6 @@ def main(args, colormap=plt.get_cmap('Set2')):
 
     x = int(T/dt) + 1
     X = [i*dt for i in range(x)]
-    ranges = list(target_partition(x, targets))
 
     fig, ax = plt.subplots()
     ax.plot(X, list(n_target_ranges(x, targets)), color='black')
