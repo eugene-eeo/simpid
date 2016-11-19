@@ -17,11 +17,13 @@ an SVG filename as the output.
 
 ## usage
 
-    $ pip install -R requirements.txt
-    $ ./simpid.py --help
+    $ git clone git@github.com:eugene-eeo/simpid.git
+    $ cd simpid
+    $ make install
+    $ ./simpid --help
 
 ## demo
 
-    $ ./simpid.py --p=0.4,0.5 --i=0.2,0.3,0.4 --d=0.01 --T=200 --k=1,10,5,13,12 abc.svg
+    $ ./simpid --p=0.4,0.5 --i=0.2,0.3,0.4 --d=0.01 --T=200 --k=1,10,5,13,12 abc.svg
 
 <img src='images/out.png'/>
