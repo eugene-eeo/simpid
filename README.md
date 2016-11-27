@@ -24,6 +24,6 @@ an SVG filename as the output.
 
 ## demo
 
-    $ ./simpid --p=0.4,0.5 --i=0.2,0.3,0.4 --d=0.01 --T=200 --k=1,10,5,13,12 abc.svg
+    $ ./simpid --p=0.2,0.5 --i=0.2,0.3,0.4 --d=0.01 --T=200 --k=1,10,5,13,12 abc.svg
 
 <img src='images/out.png'/>
