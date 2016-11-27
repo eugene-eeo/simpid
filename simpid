@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Usage:
-    simpid --p=<p> --i=<i> --d=<d> [--k=<k>] [--dt=<dt>] [--T=<T>] [--cmap=<cmap>] <filename>
+    simpid --p=<p> --i=<i> --d=<d> [--k=<k>] [--dt=<dt>] [--T=<T>] <filename>
     simpid --help
 
 Options:
@@ -12,7 +12,6 @@ Options:
     --dt=<dt>       the timestep/sampling interval [default: 1]
     --k=<k>         comma-separated targets [default: 1]
     --T=<T>         max simulation time [default: 100]
-    --cmap=<cmap>   colormap [default: Set2]
 """
 
 from itertools import product, chain
@@ -85,7 +84,7 @@ def main(args):
     kp_values = parse_csv_floats(args['--p'])
     ki_values = parse_csv_floats(args['--i'])
     kd_values = parse_csv_floats(args['--d'])
-    colormap = plt.get_cmap(args['--cmap'])
+    colormap = plt.get_cmap('Set2')
     targets = parse_csv_floats(args['--k'])
     T = float(args['--T'])
     dt = float(args['--dt'])
